@@ -57,13 +57,24 @@ local function awardSecret(player, secretIndex)
 	end
 end
 
+-- Most secrets are plain Touched pickups, but one (the sky pixel) is a
+-- ClickDetector instead -- it's non-collidable and far overhead, so
+-- there's nothing to touch. Checking for a ClickDetector child lets this
+-- stay generic instead of hardcoding "secret 1 is special" here.
 local function hookSecret(part, secretIndex)
-	part.Touched:Connect(function(hit)
-		local player = getPlayerFromHit(hit)
-		if player then
+	local clickDetector = part:FindFirstChildOfClass("ClickDetector")
+	if clickDetector then
+		clickDetector.MouseClick:Connect(function(player)
 			awardSecret(player, secretIndex)
-		end
-	end)
+		end)
+	else
+		part.Touched:Connect(function(hit)
+			local player = getPlayerFromHit(hit)
+			if player then
+				awardSecret(player, secretIndex)
+			end
+		end)
+	end
 end
 
 for secretIndex = 1, 5 do

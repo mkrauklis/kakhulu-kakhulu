@@ -15,7 +15,9 @@ into the distance:
 9. YNNACNU
 
 Five hidden secrets scattered around the map award real Roblox badges
-when found.
+when found. One of them, "Pixelation" (rated Bridge to Insanity), isn't
+something you walk into at all -- it's a single tiny black pixel hidden
+somewhere up in the sky, and you have to actually spot it and click it.
 
 This is a scripted project, not a `.rbxl` file -- the whole map (baseplate,
 board, all nine stages, checkpoints, hazards, secrets) is **built by a
@@ -80,17 +82,27 @@ doesn't exist.
 
 ## About the secret placements
 
-The 5 secret spots in `MapBuilder.server.lua` (tucked behind the
-difficulty board, a detour off Easy, a ground-level spot below where
-the course has climbed overhead, another ground-level detour past the
-harder middle stretch, and a small jump off to the side right near the
-end) are a starting point, not a finished puzzle design -- there's no way to verify
-from outside Studio whether a given spot actually *reads* as hidden-but-
-findable once you can see and move through the real 3D space. Once
-you're in there, feel free to relocate or better-disguise any of them
-(behind a wall, inside a prop, under a trapdoor) while keeping each
-part's `Secret<N>` CollectionService tag so `SecretBadges.server.lua`
-still finds it.
+Secrets 2 through 5 in `MapBuilder.server.lua` (a detour off Easy, a
+ground-level spot below where the course has climbed overhead, another
+ground-level detour past the harder middle stretch, and a small jump off
+to the side right near the end) are a starting point, not a finished
+puzzle design -- there's no way to verify from outside Studio whether a
+given spot actually *reads* as hidden-but-findable once you can see and
+move through the real 3D space. Once you're in there, feel free to
+relocate or better-disguise any of them (behind a wall, inside a prop,
+under a trapdoor) while keeping each part's `Secret<N>` CollectionService
+tag so `SecretBadges.server.lua` still finds it.
+
+Secret 1, "Pixelation," works differently: it's a non-collidable 0.4-stud
+black part placed at a random spot high in the sky (`buildSkyPixelSecret`
+in `MapBuilder.server.lua`), picked up by a `ClickDetector` instead of
+`Touched` since there's nothing to walk into. Its exact spot re-rolls
+every time the map rebuilds (every server start) -- if that's not what
+you want (e.g. you'd rather it sit at one fixed, chosen spot), swap the
+three `math.random(...)` calls in `buildSkyPixelSecret` for fixed
+numbers. Same caveat as the others: whether a 0.4-stud dot is actually
+findable-but-not-impossible against the real default sky can only be
+judged by eye in Studio.
 
 ## Tuning the course
 

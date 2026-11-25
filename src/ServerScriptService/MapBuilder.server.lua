@@ -309,10 +309,39 @@ local function buildSecret(index, cframe)
 	return secret
 end
 
--- All five sit at ground level or within an easy jump of somewhere the
+-- Secret 1: "PIXELATION", rated BRIDGE TO INSANITY -- not a part you walk
+-- into like the other four. It's a single tiny black "pixel" floating
+-- somewhere up in the sky, non-collidable, with no label (a billboard
+-- would defeat the entire point of it being hidden) -- you have to
+-- actually spot it against the sky and click it, which is why it uses a
+-- ClickDetector instead of Touched (SecretBadges.server.lua checks for
+-- that and hooks MouseClick instead). Colored to match BTI's own
+-- near-black tier color on purpose.
+local function buildSkyPixelSecret(index)
+	local pixel = createPart(
+		Vector3.new(0.4, 0.4, 0.4),
+		CFrame.new(math.random(100, 450), math.random(500, 700), math.random(-150, 150)),
+		Color3.fromRGB(0, 0, 0),
+		Enum.Material.SmoothPlastic,
+		true, false, secretsFolder
+	)
+	pixel.Name = "Secret_" .. index .. "_Pixelation"
+	pixel.CastShadow = false
+	CollectionService:AddTag(pixel, "Secret" .. index)
+	pixel:SetAttribute("SecretName", "PIXELATION")
+	pixel:SetAttribute("Difficulty", "BRIDGE TO INSANITY")
+
+	local detector = Instance.new("ClickDetector")
+	detector.MaxActivationDistance = 100000 -- it's hundreds of studs up; the default 32-stud range would make it unclickable from the ground
+	detector.Parent = pixel
+
+	return pixel
+end
+
+-- All of 2-5 sit at ground level or within an easy jump of somewhere the
 -- player can actually already stand -- nothing requires clipping through
 -- the solid baseplate or reaching an unsupported height with no path up.
-buildSecret(1, CFrame.new(BOARD_CENTER.X, 2, BOARD_CENTER.Z + 3)) -- tucked behind the board
+buildSkyPixelSecret(1) -- "PIXELATION" (rated BRIDGE TO INSANITY) -- click the hidden black pixel in the sky
 buildSecret(2, CFrame.new(60, 2, 14)) -- a short detour off to the side of EASY, down on the open ground
 buildSecret(3, CFrame.new(140, 2, 30)) -- off to the side and back down at ground level, below where the course has climbed by then
 buildSecret(4, CFrame.new(400, 2, -20)) -- another ground-level detour, out past the course's harder middle stretch
